@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Perceptron Tests</title>
+	<script src="../perceptron.js"></script>
+	<script src="testharness.js"></script>
+	<script src="testharnessreport.js"></script>
+</head>
+<body>
+	<script>
+		test(function() {
+			var identityPerceptron = new Perceptron();
+
+			// Train.
+			for (var i = 0; i < 1000; i++) {
+				identityPerceptron.learn(/*stimulus*/[i], /*desired*/i);
+			}
+
+			// Verify training produced a perceptron that ouptuts the identity function.
+			for (var i = 0; i < 10; i++) {
+				var actual = identityPerceptron.react(/*stimulus*/[i]);
+				assert_equals(actual, /*expected*/i);
+			}			
+
+		}, "Perceptron trainable to identity function");
+
+
+		test(function() {
+			var fibonacciPerceptron = new Perceptron();
+
+			// Train.
+			var previous = 0;
+			var current = 1;
+			var next;
+
+			for (var i = 0; i < 100; i++) {
+				next = previous + current;
+				fibonacciPerceptron.learn(/*stimulus*/[previous, current], /*desired*/next);
+				
+				previous = current;
+				current = next;
+			}
+
+			// Verify training produced a perceptron that ouptuts the next number in the fibonacci sequence given the prior two.
+			previous = 0;
+			current = 1;
+			for (var i = 0; i <30; i++) {
+				next = previous + current;
+				var actual = fibonacciPerceptron.react(/*stimulus*/[previous, current]);
+				assert_equals(actual, /*expected*/next);
+				previous = current;
+				current = next;
+			}			
+
+		}, "Perceptron trainable to Fibonacci series");
+
+	</script>
+	<div id="log"></div>
+</body>
+</html>
